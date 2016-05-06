@@ -13,4 +13,4 @@ tmp
 *.
 *.fdb_latexmk
 *.fls
-presentation.synctex.gz
+*.synctex.gz
