@@ -2,10 +2,11 @@
 \label{sec:types}
 
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
+
 \begin{figure}
 \begin{center}
 $\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-schema\_ty : Set := & \ \ \ \ \ & \emph{Schema} \\
+support (s : schema\_ty): Type := & & \emph{Schema} \\
 & \quad \mid STyNil: & schema\_ty\\
 & \quad \mid STyPair: & col\_ty \rightarrow schema\_ty \rightarrow schema\_ty\\
 with \:col\_ty : Set := & & \\
@@ -17,6 +18,7 @@ $
 \caption{Schema Types}
 \label{fig-schema_types}
 \end{figure}
+
 Schema in our formalization can be constructed from a pair of column type and another schema and STyNil is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types - TUnit, TFn, TPred, TSchema. Tunit is the unit type used as the type for statements. TFn and TPred are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
 \begin{figure}
@@ -81,8 +83,10 @@ $
 \label{fig-terms}
 \end{figure}
 
+The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the query terms in the formalization of logical plan and t\_load, t\_assign, t\_store, t\_seq represents the statement terms. Physical plan contains t\_lrearrange, t\_grearrange, t\_package as query terms in place of t\_group and t\_join to replace the logical GROUP and JOIN operation by a series of physical operators. 
+
+
 \begin{figure}
-\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
@@ -96,16 +100,17 @@ $
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
+	\hfill
 	\begin{minipage}{.4\textwidth}
-	\begin{flushright}
+	\begin{flushleft}
 		\begin{mathpar}
-		\inferrule* [lab = T\_ForEach]
+		\hfill\inferrule* [lab = T\_ForEach]
           	{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
 			{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
 		\end{mathpar}
 		\captionof{figure}{Typing Rules for FOREACH}
 		\label{fig:foreach}
-	\end{flushright}
+	\end{flushleft}
 	\end{minipage}
 \end{figure}
 
@@ -137,7 +142,6 @@ $
 
 
 \begin{figure}
-\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
@@ -150,6 +154,7 @@ $
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
+	\hfill
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
@@ -176,7 +181,6 @@ $
 
 
 \begin{figure}
-\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
@@ -190,6 +194,7 @@ $
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
+	\hfill
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
@@ -220,7 +225,6 @@ $
 
 
 \begin{figure}
-\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
@@ -234,6 +238,7 @@ $
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
+	\hfill
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
@@ -261,6 +266,5 @@ $
 \end{figure}
 
 
-{\bf TODO: present the new types, and the type rules here, and description of 
-these rules that focuses on the new and interesting rules.}
-
+Fig. 7 - 19 represents the typing rules for the type system of the model. The rules are written under the line and the condition to be proven for the rule to be true is written above the line. For example - In Fig 10 in the typing rule for JOIN, the rule says \newline $\Gamma$ $\vdash$ JOIN \:x \:$c_x$ \:y \:$c_y \in$ TSchema \:$S_3$ ,\: which is true when the facts above the line are proven to be true. The type of JOIN query $\in$ TSchema \:$S_3$ when $x \in \: TSchema$ \:$S_1$ and $y \in \: TSchema$ \:$S_2$ and $S_3$ is the concatenation of $S_1$ and $S_2$ and $c_x$ , $c_y$ are valid columns of schemas $S_1$ and $S_2$ respectively. The facts above the line proves the rule below the line to be true. Other typing rules for rest of the query terms and statement terms for logical and physical plan follows likewise.
+The rules depicted in Fig 7 - 19 strengthens the type checking system of our formalization model and constraints invalid typing of terms and queries in the language. For example: in the typing rule for JOIN, the type of identifier y will never be a type of TFn or TPred or TUnit.  

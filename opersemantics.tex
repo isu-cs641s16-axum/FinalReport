@@ -7,6 +7,27 @@ and description of these rules that focuses on the new and interesting rules.}
 \begin{figure}
 \begin{center}
 $\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+schema\_ty : Set := \:\emph{Support} \\
+match \:s \:with & &\\
+\quad \mid STyNil => \:unit\\
+\quad \mid a *** => \:helper \:a\\
+\quad \mid a *** s' => \: (helper \:a) * support s' \\
+end \\
+with \:helper(c: \:col\_ty) : Type := & & \\
+match \:c \:with \\
+\quad \mid CTyNat => \:nat\\
+\quad \mid CTyBag s_nested => multiset (support \:s\_nested). \\
+end.
+\end{array}
+$
+\end{center}
+\caption{Schema Support}
+\label{fig-schema_support}
+\end{figure}
+
+\begin{figure}
+\begin{center}
+$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
 relation (s: schema\_ty): Type := & \ \ \ \ \ & \emph{Relation} \\
 & \quad \mid Relation: & multiset(support \:s) \rightarrow \: relation \:s\\
 \end{array}
@@ -25,18 +46,6 @@ relation\_data (s: schema\_ty): (r: relation s) : multiset(support s) := & \ \ \
 \end{array}
 $
 \end{center}
-\caption{Relation}
-\label{fig-relation}
-\end{figure}
-
-\begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-relation (s: schema\_ty): Type := & \ \ \ \ \ & \emph{Relation} \\
-& \quad \mid Relation: & multiset(support \:s) \rightarrow \: relation \:s\\
-\end{array}
-$
-\end{center}
-\caption{Relation}
-\label{fig-relation}
+\caption{Relation Data}
+\label{fig-relationdata}
 \end{figure}
