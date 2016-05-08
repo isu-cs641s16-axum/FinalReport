@@ -87,16 +87,15 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
 
 
 \begin{figure}
+	\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\inferrule* [lab = T\_Filter]
+		\inferrule* [lab = \textbf{T\_Filter}]
           	{\Gamma \vdash x \in TSchema \:S \\ 
           	\Gamma \vdash y \in TPred \:S} 
           	{\Gamma \vdash FILTER \:x \:y \in TSchema \:S }
         \end{mathpar}
-        \captionof{figure}{Typing Rules for FILTER}
-  		\label{fig:filter}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -104,93 +103,73 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\hfill\inferrule* [lab = T\_ForEach]
+		\inferrule* [lab = \textbf{T\_ForEach}]
           	{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
 			{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for FOREACH}
-		\label{fig:foreach}
 	\end{flushleft}
-	\end{minipage}
-\end{figure}
-
-
-\begin{figure}
-\centering
+	\end{minipage}	\\[3ex]
+	
+	\begin{minipage}{1\textwidth}
+	\centering
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_Group]
-          		{\Gamma \vdash x \in TSchema \:S \\\\
-          		\:S \:[c] \in \:CTyNat} 
-          		{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
+		\inferrule* [Right= \textbf{T\_Group}]
+        	{\Gamma \vdash x \in TSchema \:S \\\\
+          	\:S \:[c] \in \:CTyNat} 
+          	{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for GROUP}
-  \label{fig:group}
-\end{figure}
-
-\begin{figure}
-  \centering
+	\end{minipage}\\[3ex]
+	
+	\begin{minipage}{.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_Join]
+		\inferrule* [Right= \textbf{T\_Join}]
           		{\Gamma \vdash x \in TSchema \:S_1 \\ \Gamma \vdash y \in  TSchema \:S_2 \\\\
 		 		S_1 \:[c_x] \in \:CTyNat \\ \:S_2 \:[c_y] \in \:CTyNat \\\\
 		 		\:S_3 = \:S_1 +++ \:S_2} 
-		 		{\Gamma \vdash JOIN \:x \:c_x \:y \:c_y \in TSchema \:S_3 }
+		 		{\Gamma \vdash JOIN \:x \:c_x \:y \:c_y \in TSchema \:S_3 } \hfill
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Join}
-  \label{fig:join}
-\end{figure}
-
-
-\begin{figure}
-	\begin{minipage}{.4\textwidth}
-	\begin{flushleft}
-		\begin{mathpar}
-		\inferrule* [lab= T\_Load]
+	\end{center}
+	\end{minipage} \\[3ex]
+		
+	\begin{minipage}{0.4\textwidth}
+	\begin{flushright}
+	\begin{mathpar}
+	\inferrule* [lab= \textbf{T\_Load}]
           		{\Gamma \vdash x = None \\ loadable\: T} 
           		{\Gamma \vdash LOAD \:x\:T \in TUnit }
-        \end{mathpar}
-        \captionof{figure}{Typing Rules for LOAD}
-  		\label{fig:load}
-	\end{flushleft}
-    \end{minipage}
-%		\hva \and
-	\hfill
+    \end{mathpar}	
+   	\end{flushright}
+   	\end{minipage}
+	\hfill	
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
-		\inferrule* [lab= T\_Store]
+		\inferrule* [lab= \textbf{T\_Store}]
 				{\Gamma \vdash x \in TSchema \:S} 
 				{\Gamma \vdash STORE \:x \in TUnit }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for STORE}
-		\label{fig:store}
 	\end{flushright}
-	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	\end{minipage} \\[3ex]
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right=\quad\: T\_Assign]
+		\inferrule* [Right= \textbf{T\_Assign}]
           		{\Gamma \vdash x = None \\ \Gamma \vdash q \in TSchema \:S} 
           		{\Gamma \vdash \:x ::= \:q \in TUnit }\\
 	\end{mathpar}
-  \captionof{figure}{Typing Rules for ASSIGN}
-  \label{fig:assign}
-\end{figure}
+	\end{center}
+	\end{minipage}
 
-
-\begin{figure}
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\inferrule* [lab= T\_SeqLoad]
+		\inferrule* [lab= \textbf{T\_SeqLoad}]
           		{s_1 = LOAD \:x \:T \\ \Gamma \vdash s_1 \in TUnit \\\\
           		\Gamma, x:T \vdash s_2 \in TUnit } 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }\\
         \end{mathpar}
-        \captionof{figure}{Typing Rules for SEQLOAD}
-  		\label{fig:seqload}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -198,31 +177,29 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
-		\inferrule* [lab= T\_SeqStore]
+		\inferrule* [lab= \textbf{T\_SeqStore}]
           	{s_1 = STORE \:x \\\\
           	\Gamma \vdash x \in\: TSchema \:S \\\\ 
 			\Gamma \vdash s_1 \in TUnit \\ \Gamma \vdash s_2 \in TUnit } 
 			{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for SEQSTORE}
-		\label{fig:seqstore}
 	\end{flushright}
 	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_SeqAssign]
+		\inferrule* [Right= \textbf{T\_SeqAssign}]
           		{s_1 = (\:x ::= \:q) \\\\
           		\Gamma \vdash q \in TSchema \:S \\\\
           		\Gamma \vdash s_1 \in TUnit \\ \Gamma, x: TSchema \:S \vdash s_2 \in TUnit} 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for SEQASSIGN}
-  \label{fig:seqassign}
+	\end{center}
+	\end{minipage}	
+	\caption{\textbf{Typing Rule: Logical Plan}}
+	\label{fig-Typing Rules}
 \end{figure}
-
 
 \begin{figure}
 	\begin{minipage}{.4\textwidth}
@@ -233,8 +210,6 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash LReArrange \:x\:c \in TSchema \:S }
         \end{mathpar}
-        \captionof{figure}{Typing Rules for LOCAL REARRANGE}
-  		\label{fig:lrearrange}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -247,24 +222,23 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash GReArrange \:x\:c \in TSchema \:S }
     	\end{mathpar}
-		\captionof{figure}{Typing Rules for GLOBAL REARRANGE}
-		\label{fig:grearrange}
 	\end{flushright}
-	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	\end{minipage} \\[3ex]
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
+	\centering
 		\inferrule* [Right= \quad T\_Package]
           		{\Gamma \vdash x \in \:TSchema \:S \\\\ 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash PACKAGE \:x \:c \in TSchema( CTyNat \:*** \:(CTyBag \:S)\:***) \: }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Package}
-  \label{fig:package}
+	\end{center}
+	\end{minipage}
+	\captionof{figure}{Typing Rule Extension for Physical Plan replacing T\_Group and T\_Join}
+  	\label{fig:typing_physical}
 \end{figure}
-
 
 Fig. 7 - 19 represents the typing rules for the type system of the model. The rules are written under the line and the condition to be proven for the rule to be true is written above the line. For example - In Fig 10 in the typing rule for JOIN, the rule says \newline $\Gamma$ $\vdash$ JOIN \:x \:$c_x$ \:y \:$c_y \in$ TSchema \:$S_3$ ,\: which is true when the facts above the line are proven to be true. The type of JOIN query $\in$ TSchema \:$S_3$ when $x \in \: TSchema$ \:$S_1$ and $y \in \: TSchema$ \:$S_2$ and $S_3$ is the concatenation of $S_1$ and $S_2$ and $c_x$ , $c_y$ are valid columns of schemas $S_1$ and $S_2$ respectively. The facts above the line proves the rule below the line to be true. Other typing rules for rest of the query terms and statement terms for logical and physical plan follows likewise.
 The rules depicted in Fig 7 - 19 strengthens the type checking system of our formalization model and constraints invalid typing of terms and queries in the language. For example: in the typing rule for JOIN, the type of identifier y will never be a type of TFn or TPred or TUnit.  

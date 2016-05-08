@@ -7,7 +7,7 @@ The exponential growth of sizes in data sets in this era of internet and data de
 
 Pig Latin comes into the picture to resolve these difficulties and provide a more imperative 
 style to express relational queries. The programming model provides an efficient way to write code which is procedural, easy to reuse and maintain. Pig Latin also provides an way to express non-atomic data types, User Defined functions, variables to store relational operations. 
-The compilation of a Pig Latin program comprises of four stages - 1) Writing High Level Pig Latin program, program verification, type checking 2) Generation of Logical plan 3) Transformation into a Physical plan 4) Generation of map-reduce jobs to run on Hadoop clusters\cite{gates2009building}.During the first step the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
+The compilation of a Pig Latin program comprises of four stages: 1) Writing High Level Pig Latin program, program verification, type checking 2) Generation of Logical plan 3) Transformation into a Physical plan 4) Generation of map-reduce jobs to run on Hadoop clusters\cite{gates2009building}.During the first step the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
 From the above compilation phases it is clear that the correctness of a Pig program largely depends on the correctness of the compilation algorithm. Correct compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through the transformation into Logical Plan and Physical Plan. Our goal is to formalize the semantics of semantics of logical plan and physical plan and prove the correctness of this compilation.
 
 \subsection{Contributions}
@@ -19,7 +19,7 @@ The major contributions of our work are:
 	\item An attempt to formalize the programming language model of Pig Latin.
 	\item Representation of Schema and relational structure of database systems.
 	\item Representing non-atomic data types such as Bags with respect to Pig Latin programming model.
-	\item Formalization of different compilation phases of Pig Latin - Logical plan and Physical plan.
+	\item Formalization of different compilation phases of Pig Latin: Logical plan and Physical plan.
 \end{enumerate}
 
 \subsection{Outline}
