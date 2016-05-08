@@ -1,7 +1,5 @@
 \section{Type System}
 \label{sec:types}
-% More appropriate title for this section usually is "A Type System with Y"
-% where Y is the new feature introduced by your approach.
 
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
 \begin{figure}
@@ -19,8 +17,7 @@ $
 \caption{Schema Types}
 \label{fig-schema_types}
 \end{figure}
-
-We have also defined four basic types - TUnit, TFn, TPred, TSchema.
+Schema in our formalization can be constructed from a pair of column type and another schema and STyNil is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types - TUnit, TFn, TPred, TSchema. Tunit is the unit type used as the type for statements. TFn and TPred are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
 \begin{figure}
 \begin{center}
@@ -61,6 +58,8 @@ $
 \label{fig-loadable}
 \end{figure} 
 
+The only valid UDFs allowed in our formalization are functions and predicates and the variety in UDFs are constrained by specifying the udf types. Similarly the only allowed loadable types are either a schema or an UDF that can be assigned to an identifier using the load statement.
+
 The terms defined in the formalized are mentioned as below:
 
 \begin{figure}
@@ -84,7 +83,16 @@ $
 
 \begin{figure}
 \centering
-  \includegraphics[width=1\linewidth]{Images/FilterForeach.JPG}
+	\begin{mathpar}
+		\inferrule* [Right=\quad T\_Filter]
+          		{\Gamma \vdash x \in TSchema \:S \\ 
+          		\Gamma \vdash y \in TPred \:S} 
+          		{\Gamma \vdash FILTER \:x \:y \in TSchema \:S }
+		\hva \and
+		\inferrule* [Right= \:\:\: T\_ForEach]
+          		{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
+				{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
+	\end{mathpar}
   \captionof{figure}{Typing Rules for FILTER and FOREACH}
   \label{fig:filter_foreach}
 \end{figure}
@@ -92,36 +100,102 @@ $
 
 \begin{figure}
 \centering
-  \includegraphics[width=1\linewidth]{Images/Group.JPG}
+	\begin{mathpar}
+		\inferrule* [Right= \quad T\_Group]
+          		{\Gamma \vdash x \in TSchema \:S \\\\
+          		\:S \:[c] \in \:CTyNat} 
+          		{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
+	\end{mathpar}
   \captionof{figure}{Typing Rule for Group}
   \label{fig:group}
 \end{figure}
 
 \begin{figure}
   \centering
-  \includegraphics[width=1\linewidth]{Images/Join.JPG}
+	\begin{mathpar}
+		\inferrule* [Right= \quad T\_Join]
+          		{\Gamma \vdash x \in TSchema \:S_1 \\ \Gamma \vdash y \in  TSchema \:S_2 \\\\
+		 		S_1 \:[c_x] \in \:CTyNat \\ \:S_2 \:[c_y] \in \:CTyNat \\\\
+		 		\:S_3 = \:S_1 +++ \:S_2} 
+		 		{\Gamma \vdash JOIN \:x \:c_x \:y \:c_y \in TSchema \:S_3 }
+	\end{mathpar}
   \captionof{figure}{Typing Rule for Join}
   \label{fig:join}
 \end{figure}
 
 \begin{figure}
 \centering
-  \includegraphics[width=1\linewidth]{Images/Load_Assign_Store.JPG}
+	\begin{mathpar}
+		\inferrule* [Right=\quad\quad\quad \:\: T\_Load]
+          		{\Gamma \vdash x = None \\ loadable\: T} 
+          		{\Gamma \vdash LOAD \:x\:T \in TUnit }\\
+		\inferrule* [Right=\quad\: T\_Assign]
+          		{\Gamma \vdash x = None \\ \Gamma \vdash q \in TSchema \:S} 
+          		{\Gamma \vdash \:x ::= \:q \in TUnit }\\
+		\inferrule* [Right=\quad\quad\quad\quad\quad T\_Store]
+				{\Gamma \vdash x \in TSchema \:S} 
+				{\Gamma \vdash STORE \:x \in TUnit }
+	\end{mathpar}
   \captionof{figure}{Typing Rules for LOAD, ASSIGN and STORE}
   \label{fig:load_assign_store}
 \end{figure}
 
 \begin{figure}
 \centering
-  \includegraphics[width=1\linewidth]{Images/SEQ1.JPG}
+	\begin{mathpar}
+		\inferrule* [Right= \quad\quad\quad\:\:\: T\_SeqLoad]
+          		{s_1 = LOAD \:x \:T \\ \Gamma \vdash s_1 \in TUnit \\\\
+          		\Gamma, x:T \vdash s_2 \in TUnit } 
+          		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }\\
+		\inferrule* [Right= \quad T\_SeqAssign]
+          		{s_1 = (\:x ::= \:q) \\\\
+          		\Gamma \vdash q \in TSchema \:S \\\\
+          		\Gamma \vdash s_1 \in TUnit \\ \Gamma, x: TSchema \:S \vdash s_2 \in TUnit} 
+          		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
+	\end{mathpar}
   \captionof{figure}{Typing Rule for Sequence}
   \label{fig:seq1}
 \end{figure}
 
 \begin{figure}
-  \includegraphics[width=1\linewidth]{Images/SEQ2.JPG}
+\centering
+	\begin{mathpar}
+		\inferrule* [Right= \quad T\_SeqStore]
+          	{s_1 = STORE \:x \\\\
+          	\Gamma \vdash x \in\: TSchema \:S \\\\ 
+			\Gamma \vdash s_1 \in TUnit \\ \Gamma \vdash s_2 \in TUnit } 
+			{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
+	\end{mathpar}
   \captionof{figure}{Typing Rule for Sequence}
   \label{fig:seq2}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{mathpar}
+		\inferrule* [Right=\quad T\_LReArrange]
+          		{\Gamma \vdash x \in \: TSchema \:S \\\\ 
+          		S \:[c] \in\:CTyNat} 
+          		{\Gamma \vdash LReArrange \:x\:c \in TSchema \:S }\\
+		\inferrule* [Right=\quad T\_GReArrange]
+          		{\Gamma \vdash x \in\: TSchema \:S \\\\ 
+          		S \:[c] \in\:CTyNat} 
+          		{\Gamma \vdash GReArrange \:x\:c \in TSchema \:S }
+	\end{mathpar}
+  \captionof{figure}{Typing Rule for Local and Global Rearrange}
+  \label{fig:rearrange}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{mathpar}
+		\inferrule* [Right= \quad T\_Package]
+          		{\Gamma \vdash x \in \:TSchema \:S \\\\ 
+          		S \:[c] \in\:CTyNat} 
+          		{\Gamma \vdash PACKAGE \:x \:c \in TSchema( CTyNat \:*** \:(CTyBag \:S)\:***) \: }
+	\end{mathpar}
+  \captionof{figure}{Typing Rule for Package}
+  \label{fig:package}
 \end{figure}
 
 
