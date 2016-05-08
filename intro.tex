@@ -3,12 +3,20 @@
 
 {\bf}
 
-The exponential growth of sizes in data sets in this era of internet and data demands highly parallel and efficient systems. The procedural map-reduce model provides an efficient way to define map and reduce function for data manipulation with only two high level data primitives to enable parallel processing. But, in spite of the appealing programming model, map-reduces imposes constraints to the flexibility and costly workarounds in expressing different data flow other than the two stage model mentioned above\cite{olston2008pig}.
+The exponential growth of sizes in data sets in this era of internet and data demands highly parallel, fault tolerant, and efficient systems. The MapReduce model \cite{dean2004mapreduce,dean2010mapreduce} has been widely for such for data manipulation. But, in spite of the appealing programming model, MapReduce imposes constraints to the flexibility and costly workarounds in expressing different data flow other than the two stage model mentioned above \cite{olston2008pig}.
 
-Pig Latin comes into the picture to resolve these difficulties and provide a more imperative 
-style to express relational queries. The programming model provides an efficient way to write code which is procedural, easy to reuse and maintain. Pig Latin also provides an way to express non-atomic data types, User Defined functions, variables to store relational operations. 
-The compilation of a Pig Latin program comprises of four stages - 1) Writing High Level Pig Latin program, program verification, type checking 2) Generation of Logical plan 3) Transformation into a Physical plan 4) Generation of map-reduce jobs to run on Hadoop clusters\cite{gates2009building}.During the first step the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
-From the above compilation phases it is clear that the correctness of a Pig program largely depends on the correctness of the compilation algorithm. Correct compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through the transformation into Logical Plan and Physical Plan. Our goal is to formalize the semantics of semantics of logical plan and physical plan and prove the correctness of this compilation.
+Pig Latin comes into the picture to resolve these difficulties and provide a more imperative style to express relational queries. The programming model provides an efficient way to write code which is procedural, easy to reuse and maintain. Pig Latin also provides an way to express non-atomic data types, User Defined functions, variables to store relational operations.
+The compilation of a Pig Latin program comprises of four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transformating into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
+
+During the first step of Pig compilation, the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
+
+
+Correct Pig compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through this sequence of transformation through the Logical Plan and Physical Plan itermediate representations. In each of these compilation phases, there is a possibility that a compiler implementation is in error, which would of course lead to incorrectness of the programs themselves.
+
+Though this work does not yet fully acheive it, our goal has been to formalize the semantics of logical plan, physical plan, and MapReduce and to turn these informal ideas of compiler correctness into formal ones.
+
+As we will discuss, the basic idea which we are working towards in this work is a formal model in which every Pig source program implies a specification--a set of abstract constraints--over the set of relations refered to in that program. A proof of correctness of a program would then the a proof that when compiled to another form, the semantics of the latter form imply that these constraints are satisfied. A proof of compiler correctness is thus a proof that for any valid Pig program, a compiled form must satisfy that program's specification.
+
 
 \subsection{Contributions}
 \label{subsec:contrib}
@@ -25,9 +33,5 @@ The major contributions of our work are:
 \subsection{Outline}
 \label{subsec:outline}
 
-Rest of the paper is organized as follows. In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans. After that we discuss some syntax and semantics of Pig Latin program and some features of the compilation phases. We then discuss the types and typing rules of our formalization. In the section after that 
+Rest of the paper is organized as follows. In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans. After that we discuss some syntax and semantics of Pig Latin program and some features of the compilation phases. We then discuss the types and typing rules of our formalization. In the section after that
 we present the dynamic semantics and some interesting rules and lemmas that we have formalized. We then discuss the challenges that we faced during the implementation of our formalization and lessons we have learned. We conclude with the benefits of this formalization and the opportunity of possible future goals and scope that this formalization opens up to us.
-
-
-
-
