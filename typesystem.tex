@@ -83,18 +83,30 @@ $
 
 \begin{figure}
 \centering
-	\begin{mathpar}
-		\inferrule* [Right=\quad T\_Filter]
-          		{\Gamma \vdash x \in TSchema \:S \\ 
-          		\Gamma \vdash y \in TPred \:S} 
-          		{\Gamma \vdash FILTER \:x \:y \in TSchema \:S }
-		\hva \and
-		\inferrule* [Right= \:\:\: T\_ForEach]
-          		{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
-				{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
-	\end{mathpar}
-  \captionof{figure}{Typing Rules for FILTER and FOREACH}
-  \label{fig:filter_foreach}
+	\begin{minipage}{.4\textwidth}
+	\begin{flushleft}
+		\begin{mathpar}
+		\inferrule* [lab = T\_Filter]
+          	{\Gamma \vdash x \in TSchema \:S \\ 
+          	\Gamma \vdash y \in TPred \:S} 
+          	{\Gamma \vdash FILTER \:x \:y \in TSchema \:S }
+        \end{mathpar}
+        \captionof{figure}{Typing Rules for FILTER}
+  		\label{fig:filter}
+	\end{flushleft}
+    \end{minipage}
+%		\hva \and
+	\begin{minipage}{.4\textwidth}
+	\begin{flushright}
+		\begin{mathpar}
+		\inferrule* [lab = T\_ForEach]
+          	{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
+			{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
+		\end{mathpar}
+		\captionof{figure}{Typing Rules for FOREACH}
+		\label{fig:foreach}
+	\end{flushright}
+	\end{minipage}
 \end{figure}
 
 
@@ -106,7 +118,7 @@ $
           		\:S \:[c] \in \:CTyNat} 
           		{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Group}
+  \captionof{figure}{Typing Rule for GROUP}
   \label{fig:group}
 \end{figure}
 
@@ -123,67 +135,117 @@ $
   \label{fig:join}
 \end{figure}
 
+
 \begin{figure}
 \centering
-	\begin{mathpar}
-		\inferrule* [Right=\quad\quad\quad \:\: T\_Load]
+	\begin{minipage}{.4\textwidth}
+	\begin{flushleft}
+		\begin{mathpar}
+		\inferrule* [lab= T\_Load]
           		{\Gamma \vdash x = None \\ loadable\: T} 
-          		{\Gamma \vdash LOAD \:x\:T \in TUnit }\\
-		\inferrule* [Right=\quad\: T\_Assign]
-          		{\Gamma \vdash x = None \\ \Gamma \vdash q \in TSchema \:S} 
-          		{\Gamma \vdash \:x ::= \:q \in TUnit }\\
-		\inferrule* [Right=\quad\quad\quad\quad\quad T\_Store]
+          		{\Gamma \vdash LOAD \:x\:T \in TUnit }
+        \end{mathpar}
+        \captionof{figure}{Typing Rules for LOAD}
+  		\label{fig:load}
+	\end{flushleft}
+    \end{minipage}
+%		\hva \and
+	\begin{minipage}{.4\textwidth}
+	\begin{flushright}
+		\begin{mathpar}
+		\inferrule* [lab= T\_Store]
 				{\Gamma \vdash x \in TSchema \:S} 
 				{\Gamma \vdash STORE \:x \in TUnit }
-	\end{mathpar}
-  \captionof{figure}{Typing Rules for LOAD, ASSIGN and STORE}
-  \label{fig:load_assign_store}
+		\end{mathpar}
+		\captionof{figure}{Typing Rules for STORE}
+		\label{fig:store}
+	\end{flushright}
+	\end{minipage}
 \end{figure}
 
 \begin{figure}
 \centering
 	\begin{mathpar}
-		\inferrule* [Right= \quad\quad\quad\:\:\: T\_SeqLoad]
+		\inferrule* [Right=\quad\: T\_Assign]
+          		{\Gamma \vdash x = None \\ \Gamma \vdash q \in TSchema \:S} 
+          		{\Gamma \vdash \:x ::= \:q \in TUnit }\\
+	\end{mathpar}
+  \captionof{figure}{Typing Rules for ASSIGN}
+  \label{fig:assign}
+\end{figure}
+
+
+\begin{figure}
+\centering
+	\begin{minipage}{.4\textwidth}
+	\begin{flushleft}
+		\begin{mathpar}
+		\inferrule* [lab= T\_SeqLoad]
           		{s_1 = LOAD \:x \:T \\ \Gamma \vdash s_1 \in TUnit \\\\
           		\Gamma, x:T \vdash s_2 \in TUnit } 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }\\
+        \end{mathpar}
+        \captionof{figure}{Typing Rules for SEQLOAD}
+  		\label{fig:seqload}
+	\end{flushleft}
+    \end{minipage}
+%		\hva \and
+	\begin{minipage}{.4\textwidth}
+	\begin{flushright}
+		\begin{mathpar}
+		\inferrule* [lab= T\_SeqStore]
+          	{s_1 = STORE \:x \\\\
+          	\Gamma \vdash x \in\: TSchema \:S \\\\ 
+			\Gamma \vdash s_1 \in TUnit \\ \Gamma \vdash s_2 \in TUnit } 
+			{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
+		\end{mathpar}
+		\captionof{figure}{Typing Rules for SEQSTORE}
+		\label{fig:seqstore}
+	\end{flushright}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{mathpar}
 		\inferrule* [Right= \quad T\_SeqAssign]
           		{s_1 = (\:x ::= \:q) \\\\
           		\Gamma \vdash q \in TSchema \:S \\\\
           		\Gamma \vdash s_1 \in TUnit \\ \Gamma, x: TSchema \:S \vdash s_2 \in TUnit} 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Sequence}
-  \label{fig:seq1}
+  \captionof{figure}{Typing Rule for SEQASSIGN}
+  \label{fig:seqassign}
 \end{figure}
+
 
 \begin{figure}
 \centering
-	\begin{mathpar}
-		\inferrule* [Right= \quad T\_SeqStore]
-          	{s_1 = STORE \:x \\\\
-          	\Gamma \vdash x \in\: TSchema \:S \\\\ 
-			\Gamma \vdash s_1 \in TUnit \\ \Gamma \vdash s_2 \in TUnit } 
-			{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
-	\end{mathpar}
-  \captionof{figure}{Typing Rule for Sequence}
-  \label{fig:seq2}
-\end{figure}
-
-\begin{figure}
-\centering
-	\begin{mathpar}
-		\inferrule* [Right=\quad T\_LReArrange]
+	\begin{minipage}{.4\textwidth}
+	\begin{flushleft}
+		\begin{mathpar}
+		\inferrule* [lab = T\_LReArrange]
           		{\Gamma \vdash x \in \: TSchema \:S \\\\ 
           		S \:[c] \in\:CTyNat} 
-          		{\Gamma \vdash LReArrange \:x\:c \in TSchema \:S }\\
-		\inferrule* [Right=\quad T\_GReArrange]
+          		{\Gamma \vdash LReArrange \:x\:c \in TSchema \:S }
+        \end{mathpar}
+        \captionof{figure}{Typing Rules for LOCAL REARRANGE}
+  		\label{fig:lrearrange}
+	\end{flushleft}
+    \end{minipage}
+%		\hva \and
+	\begin{minipage}{.4\textwidth}
+	\begin{flushright}
+		\begin{mathpar}
+		\inferrule* [lab = T\_GReArrange]
           		{\Gamma \vdash x \in\: TSchema \:S \\\\ 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash GReArrange \:x\:c \in TSchema \:S }
-	\end{mathpar}
-  \captionof{figure}{Typing Rule for Local and Global Rearrange}
-  \label{fig:rearrange}
+    	\end{mathpar}
+		\captionof{figure}{Typing Rules for GLOBAL REARRANGE}
+		\label{fig:grearrange}
+	\end{flushright}
+	\end{minipage}
 \end{figure}
 
 \begin{figure}
