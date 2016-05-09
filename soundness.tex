@@ -1,10 +1,11 @@
 \section{Meta-theory}
 \label{sec:soundness}
 
-We have not yet proven the standard soundness properties, since our formalization
-does not yet include traditional operational semantics.
+We have not yet proven the standard soundness properties, since our formalization does not yet include traditional operational semantics.
 
-We instead offer a strategy for
+We instead offer our initial work attempting to use Coq's powerful type system to define denotational semantics for Pig programs. We begin by constructing a type to represent all possible relation instances for a particular schema.
+
+We follow the example of \cite{malecha2010rdbms} and use the term \texttt{support} to denote the type of a relation's row. The exact type of a row depends upon the relation's schema. We use a type-generating function to recursively define a particular support type given a particular schema.
 
 \begin{lstlisting}
  Fixpoint support (s: schema_ty) : Type :=
@@ -20,15 +21,48 @@ We instead offer a strategy for
   end.
 \end{lstlisting}
 
+For example, if a schema is just a single a column of \texttt{CTyNat}, then this function returns \texttt{nat}. As another example, if given the more complex schema, \texttt{CTyNat *** (CTyBag CTyNat)} (i.e. a nat column followed by a column of nat-bags), then this function returns the pair type \texttt{nat * (multiset nat)}.
+
+In this way, we can use this function to construct for any schema a type which represents any possible instance of a row which might exist in any possible relation of that schema. This modeling should be useful in later proofs.
+
+We then build on this definition to construct from a schema a type which represents all possible instances of a relation of that schema. We the Coq standard library's definition of a multiset to model this (since Pig uses multiset not set semantics for its relations).
+
 \begin{lstlisting}
  Inductive relation (s: schema_ty) : Type :=
   | Relation: multiset (support s) -> relation s.
 \end{lstlisting}
 
+Essentially, \texttt{relation} is a type constructor, parameterized on a schema. It gives a way of constructing different types which ``box'' a \texttt{multiset} with an appropriate support.
+
+Using our two examples from before:
+
+\begin{itemize}
+  \item The type \texttt{relation CTyNat} is the type which simply boxes an
+        instance of \texttt{multiset nat}.
+  \item The type \texttt{relation (CTyNat *** (CTyBag CTyNat))} is the type
+        which boxes an instance of \texttt{multiset (nat * (multiset nat))}.
+\end{itemize}
+
+Each of these is a type which represents all possible instances of a relation with a particular schema. The type constructor \texttt{relation} itself is a way of constructing a type representing all possible relations of any possible schema.
+
+We now show our initial understanding of how one might take these definitions and use them to construct powerful specification propositions (i.e. statments to-be-proven).
+
+% TODO
+
 \begin{lstlisting}
- Definition relation_data (s: schema_ty) (r: relation s) :
-    multiset (support s) :=
-  match r with
-  | Relation _ mset => mset
-  end.
+ Definition is_filtered (s:schema_ty) (r0: relation s) (f:filter s)
+  (r1: relation s) :=
+  let m0  := (relation_data s r0) in
+  let m1 := (relation_data s r1) in
+  forall tup: (support s),
+    multiplicity m0 tup = match (f tup) with
+                         | true => multiplicity m1 tup
+                         | false => 0
+                         end.
+
+ Inductive filtered (s: schema_ty):
+  relation s -> filter s -> relation s -> Prop :=
+  | Filtered : forall (f: filter s) (r0 r1: relation s),
+     is_filtered s r0 f r1 ->
+     filtered s r0 f r1.
 \end{lstlisting}
