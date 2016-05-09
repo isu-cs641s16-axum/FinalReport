@@ -3,7 +3,6 @@
 
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
 
-\begin{figure}
 \begin{lstlisting}
 Inductive schema_ty : Set :=
   | STyNil: schema_ty
@@ -12,9 +11,6 @@ with col_ty : Set :=
   | CTyNat: col_ty
   | CTyBag: schema_ty -> col_ty.
 \end{lstlisting}
-\caption{Schema Types}
-\label{fig-schema_types}
-\end{figure}
 
 Schema in our formalization can be constructed from a pair of column type and another schema using \texttt{STyPair} and \texttt{STyNil} is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types: \texttt{TUnit, TFn, TPred, TSchema}. \texttt{Tunit} is the unit type used as the type for statements. \texttt{TFn} and \texttt{TPred} are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
@@ -40,9 +36,6 @@ Inductive loadable_ty : ty -> Prop :=
 \end{lstlisting}
 
 The only valid UDFs allowed in our formalization are functions and predicates and the variety in UDFs are constrained by specifying the udf types. Similarly the only allowed loadable types are either a schema or an UDF that can be assigned to an identifier using the load statement.
-
-
-The terms in Fig. 6, \texttt{t\_filter, t\_foreach, t\_group} and \texttt{t\_join} represents the query terms in the formalization of logical plan and \texttt{t\_load, t\_assign, t\_store, t\_seq} represents the statement terms. Physical plan contains \texttt{t\_lrearrange, t\_grearrange, t\_package} as query terms in place of \texttt{t\_group} and \texttt{t\_join} to replace the logical GROUP and JOIN operation by a series of physical operators.
 
 \begin{figure}
 	\centering
