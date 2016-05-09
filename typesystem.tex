@@ -4,84 +4,169 @@
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-support (s : schema\_ty): Type := & & \emph{Schema} \\
-& \quad \mid STyNil: & schema\_ty\\
-& \quad \mid STyPair: & col\_ty \rightarrow schema\_ty \rightarrow schema\_ty\\
-with \:col\_ty : Set := & & \\
-& \quad \mid CTyNat: & col\_ty\\
-& \quad \mid CTyBag: & schema\_ty \rightarrow col\_ty. \\
-\end{array}
-$
-\end{center}
+\begin{lstlisting}
+Inductive schema_ty : Set :=
+  | STyNil: schema_ty
+  | STyPair: col_ty -> schema_ty -> schema_ty
+with col_ty : Set :=
+  | CTyNat: col_ty
+  | CTyBag: schema_ty -> col_ty.
+\end{lstlisting}
 \caption{Schema Types}
 \label{fig-schema_types}
 \end{figure}
+%\begin{figure}
+%\begin{center}
+%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%schema (s : schema\_ty): Type := & & \emph{Schema} \\
+%& \quad \mid STyNil: & schema\_ty\\
+%& \quad \mid STyPair: & col\_ty \rightarrow schema\_ty \rightarrow schema\_ty\\
+%with \:col\_ty : Set := & & \\
+%& \quad \mid CTyNat: & col\_ty\\
+%& \quad \mid CTyBag: & schema\_ty \rightarrow col\_ty. \\
+%\end{array}
+%$
+%\end{center}
+%\caption{Schema Types}
+%\label{fig-schema_types}
+%\end{figure}
 
 Schema in our formalization can be constructed from a pair of column type and another schema using \texttt{STyPair} and \texttt{STyNil} is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types: \texttt{TUnit, TFn, TPred, TSchema}. \texttt{Tunit} is the unit type used as the type for statements. \texttt{TFn} and \texttt{TPred} are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-ty : Set := & \ \ \ \ \ & \emph{Types} \\
-& \quad \mid TUnit: & ty\\
-& \quad \mid TFn: & schema\_ty \rightarrow schema\_ty \rightarrow ty\\
-& \quad \mid TPred: & schema\_ty \rightarrow ty\\
-& \quad \mid TSchema: & schema\_ty \rightarrow ty. \\
-\end{array}
-$
-\end{center}
+\begin{lstlisting}
+Inductive ty: Set :=
+| TUnit : ty
+| TFn : schema_ty -> schema_ty -> ty
+| TPred : schema_ty -> ty
+| TSchema : schema_ty -> ty.
+\end{lstlisting}
 \caption{Types}
 \label{fig-types}
-\end{figure} 
+\end{figure}
 
 \begin{figure}
-\begin{center}
-	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-	udf : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{UDF} \\
-	& \quad \mid UDFTFn: & Function Type\\
-	& \quad \mid UDFTPred: & Predicate Type\\
-	\end{array}$
-\end{center}
-\caption{Types -UDF}
+\begin{lstlisting}
+Inductive udf_ty : ty -> Prop := 
+| UDFTFn: forall s1 s2: schema_ty,
+    udf_ty (TFn s1 s2)
+| UDFTPred: forall s,
+    udf_ty (TPred s).
+\end{lstlisting}
+\caption{UDF}
 \label{fig-udf}
 \end{figure}
 
 \begin{figure}
-\begin{center}
-	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-	loadable : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{Loables Types} \\
-	& \quad \mid LTSchema: & Loadable Schema\\
-	& \quad \mid LTUDF: & Loadable UDFs\\
-	\end{array}$
-\end{center}
-\caption{Types -Loadable}
+\begin{lstlisting}
+Inductive loadable_ty : ty -> Prop :=
+| LTSchema: forall s: schema_ty,
+    loadable_ty (TSchema s)
+| LTUDF: forall UDF: ty,
+    udf_ty UDF ->
+    loadable_ty UDF.
+\end{lstlisting}
+\caption{Loadables}
 \label{fig-loadable}
-\end{figure} 
+\end{figure}
+
+
+%\begin{figure}
+%\begin{center}
+%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%ty : Set := & \ \ \ \ \ & \emph{Types} \\
+%& \quad \mid TUnit: & ty\\
+%& \quad \mid TFn: & schema\_ty \rightarrow schema\_ty \rightarrow ty\\
+%& \quad \mid TPred: & schema\_ty \rightarrow ty\\
+%& \quad \mid TSchema: & schema\_ty \rightarrow ty. \\
+%\end{array}
+%$
+%\end{center}
+%\caption{Types}
+%\label{fig-types}
+%\end{figure} 
+
+%\begin{figure}
+%\begin{center}
+%	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%	udf : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{UDF} \\
+%	& \quad \mid UDFTFn: & Function Type\\
+%	& \quad \mid UDFTPred: & Predicate Type\\
+%	\end{array}$
+%\end{center}
+%\caption{Types -UDF}
+%\label{fig-udf}
+%\end{figure}
+%
+%\begin{figure}
+%\begin{center}
+%	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%	loadable : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{Loables Types} \\
+%	& \quad \mid LTSchema: & Loadable Schema\\
+%	& \quad \mid LTUDF: & Loadable UDFs\\
+%	\end{array}$
+%\end{center}
+%\caption{Types -Loadable}
+%\label{fig-loadable}
+%\end{figure} 
 
 The only valid UDFs allowed in our formalization are functions and predicates and the variety in UDFs are constrained by specifying the udf types. Similarly the only allowed loadable types are either a schema or an UDF that can be assigned to an identifier using the load statement.
+
 
 The terms defined in the formalized are mentioned as below:
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-tm : Set := & \ \ \ \ \ & \emph{Terms} \\
-& \quad \mid t\_filter: & id \rightarrow \:id \rightarrow \:tm\\
-& \quad \mid t\_foreach: & id \rightarrow \:id \rightarrow \:tm\\
-& \quad \mid t\_group: & id \rightarrow \:col \rightarrow \:tm\\
-& \quad \mid t\_join: & id \rightarrow \:col \rightarrow \:id \rightarrow \:col \rightarrow \:tm\\
-& \quad \mid t\_load: & id \rightarrow \:ty \rightarrow \:tm\\
-& \quad \mid t\_assign: & id \rightarrow \:tm \rightarrow \:tm\\
-& \quad \mid t\_store: & id \rightarrow \:tm\\
-& \quad \mid t\_seq: & tm \rightarrow \:tm \rightarrow \:tm\\
-\end{array}
-$
-\end{center}
-\caption{Terms}
-\label{fig-terms}
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}
+Inductive tm: Set :=
+| t_filter: id -> id -> tm
+| t_foreach: id -> id -> tm 
+| t_group: id -> col -> tm
+| t_join: id -> col -> id -> col -> tm
+| t_load: id -> ty -> tm
+| t_assign: id -> tm -> tm
+| t_store: id -> tm
+| t_seq: tm -> tm -> tm.
+\end{lstlisting}
+\caption{\textbf{Logical Plan}}
+\end{minipage}
+
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}
+Inductive tm: Type :=
+ | t_filter: id -> id -> tm
+ | t_foreach: id -> id -> tm 
+ | t_lrearrange: id -> col -> tm
+ | t_grearrange: id -> col -> tm
+ | t_package : id -> col -> tm
+ | t_load: id -> ty -> tm
+ | t_assign: id -> tm -> tm
+ | t_store: id -> tm
+ | t_seq: tm -> tm -> tm.
+\end{lstlisting}
+\caption{\textbf{Physical Plan}}
+\end{minipage}
 \end{figure}
+%\begin{minipage}{0.5\linewidth}
+%%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%%tm : Set := & \ \ \ \ \ & \emph{Terms} \\
+%%& \quad \mid t\_filter: & id \rightarrow \:id \rightarrow \:tm\\
+%%& \quad \mid t\_foreach: & id \rightarrow \:id \rightarrow \:tm\\
+%%& \quad \mid t\_lrearrange: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_grearrange: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_package: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_load: & id \rightarrow \:ty \rightarrow \:tm\\
+%%& \quad \mid t\_assign: & id \rightarrow \:tm \rightarrow \:tm\\
+%%& \quad \mid t\_store: & id \rightarrow \:tm\\
+%%& \quad \mid t\_seq: & tm \rightarrow \:tm \rightarrow \:tm\\
+%%\end{array}
+%%$
+
+%\end{minipage}
+%\end{center}
+%\caption{Terms}
+%\label{fig-terms}
+%\end{figure}
 
 The terms in Fig. 6, \texttt{t\_filter, t\_foreach, t\_group} and \texttt{t\_join} represents the query terms in the formalization of logical plan and \texttt{t\_load, t\_assign, t\_store, t\_seq} represents the statement terms. Physical plan contains \texttt{t\_lrearrange, t\_grearrange, t\_package} as query terms in place of \texttt{t\_group} and \texttt{t\_join} to replace the logical GROUP and JOIN operation by a series of physical operators. 
 
