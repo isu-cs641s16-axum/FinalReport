@@ -2,9 +2,33 @@
 \label{sec:soundness}
 
 This section proves the formal properties of Y. % Here, Y is the name of your calculus.
-We first show the standard soundness property. 
+We first show the standard soundness property.
 Next, we prove P1. Then, we prove P2. % Here, P1 and P2 are properties specific to your calculus.
 
 {\bf TODO: present theorem and prove soundness. Present theorems and prove P1 and P2}
 
+\begin{lstlisting}
+Fixpoint support (s: schema_ty) : Type :=
+  match s with
+  | STyNil => unit
+  | a *** => helper a
+  | a *** s1 => (helper a) * support s1
+  end
+with helper(c: col_ty) : Type :=
+  match c with
+  | CTyNat => nat
+  | CTyBag s_nested => multiset (support s_nested)
+  end.
+\end{lstlisting}
 
+\begin{lstlisting}
+Inductive relation (s: schema_ty) : Type :=
+| Relation: multiset (support s) -> relation s.
+\end{lstlisting}
+
+\begin{lstlisting}
+Definition relation_data (s: schema_ty) (r: relation s) : multiset (support s) :=
+  match r with
+  | Relation _ mset => mset
+  end.
+\end{lstlisting}

@@ -1,26 +1,36 @@
 \section{Language}
 \label{sec:syntax}
-% A more appropriate section title usually has the form X: A Calculus with Y, where X 
-% is the given name of the calculus and Y is the main new idea in the calculus.
 
+The following are the terms used in the formalization of the logical plan.
 
-{\bf TODO: Present syntax here, and description of syntax that mostly 
-focuses on new and interesting elements.}
+\begin{lstlisting}
+  Inductive tm: Set :=
+  | t_filter: id -> id -> tm
+  | t_foreach: id -> id -> tm
+  | t_group: id -> col -> tm
+  | t_join: id -> col -> id -> col -> tm
+  | t_load: id -> ty -> tm
+  | t_assign: id -> tm -> tm
+  | t_store: id -> tm
+  | t_seq: tm -> tm -> tm.
+\end{lstlisting}
 
-%% NOTE: treat this figure as an example. Feel free to improve, if needed.
-%\begin{figure}[t]
-%\begin{center}
-%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-%e &  ::= & b \mid x & \emph{expressions} \\
-%&\ \ \ \   \mid & \lambda x:T.e \\
-%&\ \ \ \   \mid & \textbf{let}~x=e~\textbf{in}~e \\
-%\end{array}
-%$
-%\end{center}
-%\caption{Abstract Syntax (in this paper, notation
-%$\overline{\bullet}$ represents a set of $\bullet$ elements).}
-%\label{fig-syntax}
-%\end{figure}
+The terms for \texttt{FILTER}, \texttt{FOREACH}, \texttt{GROUP} and \texttt{JOIN} represent the query terms in the formalization of logical plan and the \texttt{LOAD}, \texttt{ASSIGN}, \texttt{STORE}, and \texttt{SEQ} terms are the statements.
 
+The following are the terms used in the physical plan.
 
+\begin{lstlisting}
+  Inductive tm: Type :=
+   | t_filter: id -> id -> tm
+   | t_foreach: id -> id -> tm
+   | t_lrearrange: id -> col -> tm
+   | t_grearrange: id -> col -> tm
+   | t_package : id -> col -> tm
+   | t_load: id -> ty -> tm
+   | t_assign: id -> tm -> tm
+   | t_store: id -> tm
+   | t_seq: tm -> tm -> tm.
+\end{lstlisting}
 
+Note that the physical plan is just like the logical plan, except that \texttt{GROUP} and \texttt{JOIN} have been replaced by \texttt{LOCAL REARRANGE},
+\texttt{GLOBAL REARRANGE}, and \texttt{PACKAGE}.
