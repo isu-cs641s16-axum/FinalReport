@@ -8,16 +8,16 @@ and description of these rules that focuses on the new and interesting rules.}
 \begin{center}
 \begin{lstlisting}
 Fixpoint support (s: schema_ty) : Type :=
-	match s with
-  	| STyNil => unit
-  	| a *** => helper a
-  	| a *** => (helper a) * support s'
-  	end
+  match s with
+  | STyNil => unit
+  | a *** => helper a
+  | a *** s1 => (helper a) * support s1
+  end
 with helper(c: col_ty) : Type :=
-	match c with
-	| CTyNat => nat
-	| CTyBag s_nested => multiset (support s_nested)
-	end.
+  match c with
+  | CTyNat => nat
+  | CTyBag s_nested => multiset (support s_nested)
+  end.
 \end{lstlisting}
 %$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
 %schema\_ty : Set := \:\emph{Support} \\
