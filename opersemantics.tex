@@ -6,7 +6,7 @@ and description of these rules that focuses on the new and interesting rules.}
 
 \begin{figure}
 \begin{center}
-\begin{lstlisting}
+\begin{lstlisting}[language={}]
 Fixpoint support (s: schema_ty) : Type :=
   match s with
   | STyNil => unit
@@ -34,7 +34,7 @@ with helper(c: col_ty) : Type :=
 %\end{array}
 %$
 \end{center}
-\caption{Schema Support}
+\caption{\textbf{Schema Support}}
 \label{fig-schema_support}
 \end{figure}
 
@@ -50,7 +50,7 @@ Inductive relation (s: schema_ty) : Type :=
 %\end{array}
 %$
 \end{center}
-\caption{Relation}
+\caption{\textbf{Relation}}
 \label{fig-relation}
 \end{figure}
 
@@ -69,6 +69,6 @@ Definition relation_data (s: schema_ty) (r: relation s) : multiset (support s) :
 %\end{array}
 %$
 \end{center}
-\caption{Relation Data}
+\caption{\textbf{Relation Data}}
 \label{fig-relationdata}
 \end{figure}

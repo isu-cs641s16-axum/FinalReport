@@ -24,6 +24,6 @@ In the above example two files are loaded into variable A and B. A is filtered b
 \begin{center}
 \includegraphics[scale=0.5]{Images/LogicalPhysicalPlan.JPG} 
 \end{center}
-\caption{Logical - Physical Plan\cite{gates2009building}}
+\caption{\textbf{Logical - Physical Plan\cite{gates2009building}}}
 \end{figure}
 In Figure 1 it shows how the program from the example gets compiled to the logical plan and physical plan. Each data transformation operation gets mapped one to one to each node in logical plan. Each logical operator is annotated with a number id corresponding to the operation defined in the program. The logical plan is then translated into a physical plan where the GROUP BY operation is divided into a series of physical operators - LOCAL REARRANGE, GLOBAL REARRANGE, PACKAGE operations and JOIN operation comprises of the same physical operators followed by a FOREACH operation. Corresponding logical and physical operators are annotated with the same id.

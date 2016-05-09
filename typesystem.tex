@@ -12,7 +12,7 @@ with col_ty : Set :=
   | CTyNat: col_ty
   | CTyBag: schema_ty -> col_ty.
 \end{lstlisting}
-\caption{Schema Types}
+\caption{\textbf{Schema Types}}
 \label{fig-schema_types}
 \end{figure}
 %\begin{figure}
@@ -41,7 +41,7 @@ Inductive ty: Set :=
 | TPred : schema_ty -> ty
 | TSchema : schema_ty -> ty.
 \end{lstlisting}
-\caption{Types}
+\caption{\textbf{Types}}
 \label{fig-types}
 \end{figure}
 
@@ -53,7 +53,7 @@ Inductive udf_ty : ty -> Prop :=
 | UDFTPred: forall s,
     udf_ty (TPred s).
 \end{lstlisting}
-\caption{UDF}
+\caption{\textbf{UDF}}
 \label{fig-udf}
 \end{figure}
 
@@ -66,7 +66,7 @@ Inductive loadable_ty : ty -> Prop :=
     udf_ty UDF ->
     loadable_ty UDF.
 \end{lstlisting}
-\caption{Loadables}
+\caption{\textbf{Loadables}}
 \label{fig-loadable}
 \end{figure}
 
@@ -116,7 +116,7 @@ The only valid UDFs allowed in our formalization are functions and predicates an
 The terms defined in the formalized are mentioned as below:
 
 \begin{figure}
-\begin{minipage}{0.4\linewidth}
+\centering
 \begin{lstlisting}
 Inductive tm: Set :=
 | t_filter: id -> id -> tm
@@ -129,9 +129,7 @@ Inductive tm: Set :=
 | t_seq: tm -> tm -> tm.
 \end{lstlisting}
 \caption{\textbf{Logical Plan}}
-\end{minipage}
 
-\begin{minipage}{0.4\linewidth}
 \begin{lstlisting}
 Inductive tm: Type :=
  | t_filter: id -> id -> tm
@@ -145,7 +143,6 @@ Inductive tm: Type :=
  | t_seq: tm -> tm -> tm.
 \end{lstlisting}
 \caption{\textbf{Physical Plan}}
-\end{minipage}
 \end{figure}
 %\begin{minipage}{0.5\linewidth}
 %%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
