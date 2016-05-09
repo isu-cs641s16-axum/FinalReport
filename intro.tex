@@ -3,10 +3,10 @@
 
 {\bf}
 
-The exponential growth of sizes in data sets in this era of internet-scale data demands highly parallel, fault tolerant, and efficient data analysis systems. The MapReduce model \cite{dean2004mapreduce} \cite{dean2010mapreduce} has been widely used for such for data manipulation.
+The exponential growth of sizes in data sets in this era of internet-scale data demands highly parallel, fault tolerant, and efficient data analysis systems. The MapReduce model \cite{dean2004mapreduce} \cite{dean2010mapreduce} has been widely used for such data manipulation.
 
 However, though the MapReduce abstraction is appropriate for many tasks, it is somewhat constrained in expressing certain common data flow operations \cite{olston2008pig}. The Pig Latin programming language \cite{olston2008pig} provides the programmer with traditional relation queries such as \texttt{FOREACH}, \texttt{GROUP-BY}, \texttt{JOIN}, and \texttt{FILTER}, while
-still being able to exploit the advantages of the Hadoop MapReduce platform, thus sidestepping certain scalability limits associated with traditional databases. Additionally, allows the programmers to use variables, statements, and nested queries to enable an imperative style for expressing relational queries. When queries have complex dataflows, programmers may find this imperative style more intuitive than the traditional algebraic relational style. Furthermore, Pig Latin provides the programmer with useful features such as non-atomic (i.e. compound) data types and user defined functions (UDFs).
+still being able to exploit the advantages of the Hadoop MapReduce platform, thus sidestepping certain scalability limits associated with traditional databases. Additionally, it allows the programmers to use variables, statements, and nested queries to enable an imperative style for expressing relational queries. When queries have complex dataflows, programmers may find this imperative style more intuitive than the traditional algebraic relational style. Furthermore, Pig Latin provides the programmer with useful features such as non-atomic (i.e. compound) data types and user defined functions (UDFs).
 
 The compilation of a Pig Latin program has four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transforming into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
 
