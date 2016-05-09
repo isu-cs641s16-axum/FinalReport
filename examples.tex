@@ -12,13 +12,13 @@ To clarify this process, consider the following example.
 
 The following example \cite{gates2009building} describes a simple Pig Latin program that takes two data sources file1 and file2 as input. performs a series of data transformations on them and finally stores the output.
 \begin{lstlisting}
-  A = LOAD 'file1' AS (x,y,z);
-  B = LOAD 'file2' AS (t,u,v);
-  C = FILTER A BY y>0;
-  D = JOIN C BY x, B by u;
-  E = GROUP D BY z;
-  F = FOREACH E GENERATE group, COUNT(D);
-  STORE F into 'output';
+ A = LOAD 'file1' AS (x,y,z);
+ B = LOAD 'file2' AS (t,u,v);
+ C = FILTER A BY y>0;
+ D = JOIN C BY x, B by u;
+ E = GROUP D BY z;
+ F = FOREACH E GENERATE group, COUNT(D);
+ STORE F into 'output';
 \end{lstlisting}
 
 Here is an informal description of the meaning of this Pig Latin program:

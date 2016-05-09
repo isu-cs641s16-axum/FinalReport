@@ -4,7 +4,7 @@
 The following are the terms used in the formalization of the logical plan.
 
 \begin{lstlisting}
-  Inductive tm: Set :=
+ Inductive tm: Set :=
   | t_filter: id -> id -> tm
   | t_foreach: id -> id -> tm
   | t_group: id -> col -> tm
@@ -20,16 +20,16 @@ The terms for \texttt{FILTER}, \texttt{FOREACH}, \texttt{GROUP} and \texttt{JOIN
 The following are the terms used in the physical plan.
 
 \begin{lstlisting}
-  Inductive tm: Type :=
-   | t_filter: id -> id -> tm
-   | t_foreach: id -> id -> tm
-   | t_lrearrange: id -> col -> tm
-   | t_grearrange: id -> col -> tm
-   | t_package : id -> col -> tm
-   | t_load: id -> ty -> tm
-   | t_assign: id -> tm -> tm
-   | t_store: id -> tm
-   | t_seq: tm -> tm -> tm.
+ Inductive tm: Type :=
+  | t_filter: id -> id -> tm
+  | t_foreach: id -> id -> tm
+  | t_lrearrange: id -> col -> tm
+  | t_grearrange: id -> col -> tm
+  | t_package : id -> col -> tm
+  | t_load: id -> ty -> tm
+  | t_assign: id -> tm -> tm
+  | t_store: id -> tm
+  | t_seq: tm -> tm -> tm.
 \end{lstlisting}
 
 Note that the physical plan is just like the logical plan, except that \texttt{GROUP} and \texttt{JOIN} have been replaced by \texttt{LOCAL REARRANGE},

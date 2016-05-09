@@ -4,10 +4,10 @@
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
 
 \begin{lstlisting}
-Inductive schema_ty : Set :=
+ Inductive schema_ty : Set :=
   | STyNil: schema_ty
   | STyPair: col_ty -> schema_ty -> schema_ty
-with col_ty : Set :=
+  with col_ty : Set :=
   | CTyNat: col_ty
   | CTyBag: schema_ty -> col_ty.
 \end{lstlisting}
@@ -15,19 +15,19 @@ with col_ty : Set :=
 Schema in our formalization can be constructed from a pair of column type and another schema using \texttt{STyPair} and \texttt{STyNil} is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types: \texttt{TUnit, TFn, TPred, TSchema}. \texttt{Tunit} is the unit type used as the type for statements. \texttt{TFn} and \texttt{TPred} are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
 \begin{lstlisting}
-  Inductive ty: Set :=
+ Inductive ty: Set :=
   | TUnit : ty
   | TFn : schema_ty -> schema_ty -> ty
   | TPred : schema_ty -> ty
   | TSchema : schema_ty -> ty.
 
-Inductive udf_ty : ty -> Prop :=
+ Inductive udf_ty : ty -> Prop :=
   | UDFTFn: forall s1 s2: schema_ty,
       udf_ty (TFn s1 s2)
   | UDFTPred: forall s,
       udf_ty (TPred s).
 
-Inductive loadable_ty : ty -> Prop :=
+ Inductive loadable_ty : ty -> Prop :=
   | LTSchema: forall s: schema_ty,
       loadable_ty (TSchema s)
   | LTUDF: forall UDF: ty,
