@@ -3,20 +3,20 @@
 
 {\bf}
 
-The exponential growth of sizes in data sets in this era of internet and data demands highly parallel, fault tolerant, and efficient systems. The MapReduce model \cite{dean2004mapreduce} \cite{dean2010mapreduce} has been widely for such for data manipulation. But, in spite of the appealing programming model, MapReduce imposes constraints to the flexibility and costly workarounds in expressing different data flow other than the two stage model mentioned above \cite{olston2008pig}.
+The exponential growth of sizes in data sets in this era of internet-scale data demands highly parallel, fault tolerant, and efficient data analysis systems. The MapReduce model \cite{dean2004mapreduce} \cite{dean2010mapreduce} has been widely used for such for data manipulation.
 
-Pig Latin comes into the picture to resolve these difficulties and provide a more imperative style to express relational queries. The programming model provides an efficient way to write code which is procedural, easy to reuse and maintain. Pig Latin also provides an way to express non-atomic data types, User Defined functions, variables to store relational operations.
+However, though the MapReduce abstraction is appropriate for many tasks, it is somewhat constrained in expressing certain common data flow operations \cite{olston2008pig}. The Pig Latin programming language \cite{olston2008pig} provides the programmer with traditional relation queries such as \texttt{FOREACH}, \texttt{GROUP-BY}, \texttt{JOIN}, and \texttt{FILTER}, while
+still being able to exploit the advantages of the Hadoop MapReduce platform, thus sidestepping certain scalability limits associated with traditional databases. Additionally, allows the programmers to use variables, statements, and nested queries to enable an imperative style for expressing relational queries. When queries have complex dataflows, programmers may find this imperative style more intuitive than the traditional algebraic relational style. Furthermore, Pig Latin provides the programmer with useful features such as non-atomic (i.e. compound) data types and user defined functions (UDFs).
 
-The compilation of a Pig Latin program comprises of four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transformating into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
+The compilation of a Pig Latin program has four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transforming into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
 
-Correct Pig compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through this sequence of transformation through the Logical Plan and Physical Plan itermediate representations. In each of these compilation phases, there is a possibility that a compiler implementation is in error, which would of course lead to incorrectness of the programs themselves.
+Correct Pig compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through this sequence of transformations (via the Logical Plan and Physical Plan itermediate representations). In each of these compilation phases, there is a possibility that a compiler implementation is in error, which would of course lead to incorrectness of the programs themselves.
 
-When beginning this project, our goal was to formalize the semantics of the logical plan, physical plan, and MapReduce and to turn our informal ideas of compiler formalization into formal correctness proofs over well-defined semantics. This was an overly ambitious goal, and our work has not yet achieved it. However, we believe that we have made some important first steps
-towards such a goal.
+When beginning this project, our goal was to formalize the semantics of the logical plan, physical plan, and MapReduce and to turn our informal ideas of compiler verification into formal correctness proofs over well-defined semantics. This was undoubtedly an overly-ambitious goal, and our work has not yet achieved it. However, we believe that we have made some important first steps towards this goal.
 
-In particular, we believe that there is promise in our use of Coq to formulate Pig program specifications. As we will discuss in greater detail later in this report, we have set out to use Coq to define a formal model in which every Pig source program implies a single specification---a set of constraints---over the set of relations (a.k.a. tables) refered to in that program.
+In particular, we believe that there is promise in those aspects of our methodology where we use the Coq proof assistant to formulate Pig program specifications. As we will discuss in greater detail later in this report, we have set out to use Coq to define a formal model in which every Pig source program implies a single specification---a set of constraints---over the set of relations (a.k.a. tables) refered to in that program.
 
-A proof of correctness of a program would then be a proof that when compiled to another form, the semantics of the latter form imply that these constraints are satisfied. A proof of compiler correctness is thus a proof that for any valid Pig program, a compiled form must satisfy that program's specification.
+A proof of correctness of a program would then be a proof that when compiled to some other form, the semantics of the latter form imply that these constraints are satisfied. A proof of compiler correctness is thus a proof that for any valid Pig program, its compiled form must satisfy that program's specification.
 
 \textbf{Purpose of Report:} The goal of this report is to describe our formalizations, to discuss some of our design choices which we made when using the Coq proof assistant to implement our representation, and to note some of the challenges which we faced while using Coq to achieve these goals.
 
@@ -28,9 +28,9 @@ A proof of correctness of a program would then be a proof that when compiled to 
 	\begin{enumerate}
 		\item Programs specify queries over relations using common data
 		      transformation operators.
-		\item Programs manipulate aggregate non-atomic types (e.g. bags).
-		\item Programs use user defined functions (UDFs) from an environment.
-		\item Programs specify data flow via statements.
+		\item Programs may manipulate aggregate non-atomic types (e.g. bags).
+		\item Programs may use user defined functions (UDFs) from an environment.
+		\item Programs specify data flow via variable definitions and statements.
 		\item Programs are parallelizable and distributable.
 	\end{enumerate}
   \item The definition of Coq types to formalize the Pig ``logical plan'' and
@@ -42,8 +42,10 @@ A proof of correctness of a program would then be a proof that when compiled to 
 
 \textbf{Outline} The rest of the paper is organized as follows.
 
-In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans, and to also give a sense  of how specifications may be derived from these.
+\begin{itemize}
+	\item In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans, and to also give a sense  of how specifications may be derived from these.
 
-In Sections 3 and 4, that we discuss some syntax and semantics of Pig Latin program followed by our discussion of their typing relations. In Sections 5 and 6, we discuss how specifications could be constructed from source programs and explain the basic idea behind how they could be used.
+	\item In Sections 3 and 4, that we discuss some syntax and semantics of Pig Latin program followed by our discussion of their typing relations. In Sections 5 and 6, we discuss how specifications could be constructed from source programs and explain the basic idea behind how they could be used.
 
-Sections 7-9 discuss related work and future work.
+	\item Sections 7-9 offer related work, our acknowledgements, and future work.
+\end{itemize}
