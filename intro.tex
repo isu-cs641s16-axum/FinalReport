@@ -3,12 +3,11 @@
 
 {\bf}
 
-The exponential growth of sizes in data sets in this era of internet and data demands highly parallel, fault tolerant, and efficient systems. The MapReduce model \cite{dean2004mapreduce,dean2010mapreduce} has been widely for such for data manipulation. But, in spite of the appealing programming model, MapReduce imposes constraints to the flexibility and costly workarounds in expressing different data flow other than the two stage model mentioned above \cite{olston2008pig}.
+The exponential growth of sizes in data sets in this era of internet and data demands highly parallel, fault tolerant, and efficient systems. The MapReduce model \cite{dean2004mapreduce} \cite{dean2010mapreduce} has been widely for such for data manipulation. But, in spite of the appealing programming model, MapReduce imposes constraints to the flexibility and costly workarounds in expressing different data flow other than the two stage model mentioned above \cite{olston2008pig}.
 
 Pig Latin comes into the picture to resolve these difficulties and provide a more imperative style to express relational queries. The programming model provides an efficient way to write code which is procedural, easy to reuse and maintain. Pig Latin also provides an way to express non-atomic data types, User Defined functions, variables to store relational operations.
-The compilation of a Pig Latin program comprises of four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transformating into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
 
-During the first step of Pig compilation, the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
+The compilation of a Pig Latin program comprises of four stages \cite{gates2009building}: \begin{enumerate*}[label=\itshape\alph*\upshape)] \item parsing source Pig Latin program, program verification, type checking; \item generating logical plan; \item transformating into a physical plan; \item generating map-reduce jobs to run on Hadoop clusters \end{enumerate*}.
 
 Correct Pig compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through this sequence of transformation through the Logical Plan and Physical Plan itermediate representations. In each of these compilation phases, there is a possibility that a compiler implementation is in error, which would of course lead to incorrectness of the programs themselves.
 

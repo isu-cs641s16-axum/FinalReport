@@ -4,99 +4,183 @@
 We have defined a number of new types to fit into our formalization model and we will discuss them one by one. The schema of the relations are defined as a type.
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-support (s : schema\_ty): Type := & & \emph{Schema} \\
-& \quad \mid STyNil: & schema\_ty\\
-& \quad \mid STyPair: & col\_ty \rightarrow schema\_ty \rightarrow schema\_ty\\
-with \:col\_ty : Set := & & \\
-& \quad \mid CTyNat: & col\_ty\\
-& \quad \mid CTyBag: & schema\_ty \rightarrow col\_ty. \\
-\end{array}
-$
-\end{center}
+\begin{lstlisting}
+Inductive schema_ty : Set :=
+  | STyNil: schema_ty
+  | STyPair: col_ty -> schema_ty -> schema_ty
+with col_ty : Set :=
+  | CTyNat: col_ty
+  | CTyBag: schema_ty -> col_ty.
+\end{lstlisting}
 \caption{Schema Types}
 \label{fig-schema_types}
 \end{figure}
+%\begin{figure}
+%\begin{center}
+%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%schema (s : schema\_ty): Type := & & \emph{Schema} \\
+%& \quad \mid STyNil: & schema\_ty\\
+%& \quad \mid STyPair: & col\_ty \rightarrow schema\_ty \rightarrow schema\_ty\\
+%with \:col\_ty : Set := & & \\
+%& \quad \mid CTyNat: & col\_ty\\
+%& \quad \mid CTyBag: & schema\_ty \rightarrow col\_ty. \\
+%\end{array}
+%$
+%\end{center}
+%\caption{Schema Types}
+%\label{fig-schema_types}
+%\end{figure}
 
-Schema in our formalization can be constructed from a pair of column type and another schema and STyNil is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types - TUnit, TFn, TPred, TSchema. Tunit is the unit type used as the type for statements. TFn and TPred are used for functions and predicates respectively and they take schema types as argument to produce the new types.
+Schema in our formalization can be constructed from a pair of column type and another schema using \texttt{STyPair} and \texttt{STyNil} is used as a schema terminator. The column type can be an atomic attribute or it can be another complex schema as well. We have also defined four basic types: \texttt{TUnit, TFn, TPred, TSchema}. \texttt{Tunit} is the unit type used as the type for statements. \texttt{TFn} and \texttt{TPred} are used for functions and predicates respectively and they take schema types as argument to produce the new types.
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-ty : Set := & \ \ \ \ \ & \emph{Types} \\
-& \quad \mid TUnit: & ty\\
-& \quad \mid TFn: & schema\_ty \rightarrow schema\_ty \rightarrow ty\\
-& \quad \mid TPred: & schema\_ty \rightarrow ty\\
-& \quad \mid TSchema: & schema\_ty \rightarrow ty. \\
-\end{array}
-$
-\end{center}
+\begin{lstlisting}
+Inductive ty: Set :=
+| TUnit : ty
+| TFn : schema_ty -> schema_ty -> ty
+| TPred : schema_ty -> ty
+| TSchema : schema_ty -> ty.
+\end{lstlisting}
 \caption{Types}
 \label{fig-types}
-\end{figure} 
+\end{figure}
 
 \begin{figure}
-\begin{center}
-	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-	udf : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{UDF} \\
-	& \quad \mid UDFTFn: & Function Type\\
-	& \quad \mid UDFTPred: & Predicate Type\\
-	\end{array}$
-\end{center}
-\caption{Types -UDF}
+\begin{lstlisting}
+Inductive udf_ty : ty -> Prop := 
+| UDFTFn: forall s1 s2: schema_ty,
+    udf_ty (TFn s1 s2)
+| UDFTPred: forall s,
+    udf_ty (TPred s).
+\end{lstlisting}
+\caption{UDF}
 \label{fig-udf}
 \end{figure}
 
 \begin{figure}
-\begin{center}
-	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-	loadable : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{Loables Types} \\
-	& \quad \mid LTSchema: & Loadable Schema\\
-	& \quad \mid LTUDF: & Loadable UDFs\\
-	\end{array}$
-\end{center}
-\caption{Types -Loadable}
+\begin{lstlisting}
+Inductive loadable_ty : ty -> Prop :=
+| LTSchema: forall s: schema_ty,
+    loadable_ty (TSchema s)
+| LTUDF: forall UDF: ty,
+    udf_ty UDF ->
+    loadable_ty UDF.
+\end{lstlisting}
+\caption{Loadables}
 \label{fig-loadable}
-\end{figure} 
+\end{figure}
+
+
+%\begin{figure}
+%\begin{center}
+%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%ty : Set := & \ \ \ \ \ & \emph{Types} \\
+%& \quad \mid TUnit: & ty\\
+%& \quad \mid TFn: & schema\_ty \rightarrow schema\_ty \rightarrow ty\\
+%& \quad \mid TPred: & schema\_ty \rightarrow ty\\
+%& \quad \mid TSchema: & schema\_ty \rightarrow ty. \\
+%\end{array}
+%$
+%\end{center}
+%\caption{Types}
+%\label{fig-types}
+%\end{figure} 
+
+%\begin{figure}
+%\begin{center}
+%	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%	udf : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{UDF} \\
+%	& \quad \mid UDFTFn: & Function Type\\
+%	& \quad \mid UDFTPred: & Predicate Type\\
+%	\end{array}$
+%\end{center}
+%\caption{Types -UDF}
+%\label{fig-udf}
+%\end{figure}
+%
+%\begin{figure}
+%\begin{center}
+%	$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%	loadable : ty \rightarrow \:Prop := & \ \ \ \ \ & \emph{Loables Types} \\
+%	& \quad \mid LTSchema: & Loadable Schema\\
+%	& \quad \mid LTUDF: & Loadable UDFs\\
+%	\end{array}$
+%\end{center}
+%\caption{Types -Loadable}
+%\label{fig-loadable}
+%\end{figure} 
 
 The only valid UDFs allowed in our formalization are functions and predicates and the variety in UDFs are constrained by specifying the udf types. Similarly the only allowed loadable types are either a schema or an UDF that can be assigned to an identifier using the load statement.
+
 
 The terms defined in the formalized are mentioned as below:
 
 \begin{figure}
-\begin{center}
-$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
-tm : Set := & \ \ \ \ \ & \emph{Terms} \\
-& \quad \mid t\_filter: & id \rightarrow \:id \rightarrow \:tm\\
-& \quad \mid t\_foreach: & id \rightarrow \:id \rightarrow \:tm\\
-& \quad \mid t\_group: & id \rightarrow \:col \rightarrow \:tm\\
-& \quad \mid t\_join: & id \rightarrow \:col \rightarrow \:id \rightarrow \:col \rightarrow \:tm\\
-& \quad \mid t\_load: & id \rightarrow \:ty \rightarrow \:tm\\
-& \quad \mid t\_assign: & id \rightarrow \:tm \rightarrow \:tm\\
-& \quad \mid t\_store: & id \rightarrow \:tm\\
-& \quad \mid t\_seq: & tm \rightarrow \:tm \rightarrow \:tm\\
-\end{array}
-$
-\end{center}
-\caption{Terms}
-\label{fig-terms}
-\end{figure}
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}
+Inductive tm: Set :=
+| t_filter: id -> id -> tm
+| t_foreach: id -> id -> tm 
+| t_group: id -> col -> tm
+| t_join: id -> col -> id -> col -> tm
+| t_load: id -> ty -> tm
+| t_assign: id -> tm -> tm
+| t_store: id -> tm
+| t_seq: tm -> tm -> tm.
+\end{lstlisting}
+\caption{\textbf{Logical Plan}}
+\end{minipage}
 
-The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the query terms in the formalization of logical plan and t\_load, t\_assign, t\_store, t\_seq represents the statement terms. Physical plan contains t\_lrearrange, t\_grearrange, t\_package as query terms in place of t\_group and t\_join to replace the logical GROUP and JOIN operation by a series of physical operators. 
+\begin{minipage}{0.4\linewidth}
+\begin{lstlisting}
+Inductive tm: Type :=
+ | t_filter: id -> id -> tm
+ | t_foreach: id -> id -> tm 
+ | t_lrearrange: id -> col -> tm
+ | t_grearrange: id -> col -> tm
+ | t_package : id -> col -> tm
+ | t_load: id -> ty -> tm
+ | t_assign: id -> tm -> tm
+ | t_store: id -> tm
+ | t_seq: tm -> tm -> tm.
+\end{lstlisting}
+\caption{\textbf{Physical Plan}}
+\end{minipage}
+\end{figure}
+%\begin{minipage}{0.5\linewidth}
+%%$\begin{array}{@{}l@{~}l@{\quad}l@{\!\!\!\!\!\!}r}
+%%tm : Set := & \ \ \ \ \ & \emph{Terms} \\
+%%& \quad \mid t\_filter: & id \rightarrow \:id \rightarrow \:tm\\
+%%& \quad \mid t\_foreach: & id \rightarrow \:id \rightarrow \:tm\\
+%%& \quad \mid t\_lrearrange: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_grearrange: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_package: & id \rightarrow \:col \rightarrow \:tm\\
+%%& \quad \mid t\_load: & id \rightarrow \:ty \rightarrow \:tm\\
+%%& \quad \mid t\_assign: & id \rightarrow \:tm \rightarrow \:tm\\
+%%& \quad \mid t\_store: & id \rightarrow \:tm\\
+%%& \quad \mid t\_seq: & tm \rightarrow \:tm \rightarrow \:tm\\
+%%\end{array}
+%%$
+
+%\end{minipage}
+%\end{center}
+%\caption{Terms}
+%\label{fig-terms}
+%\end{figure}
+
+The terms in Fig. 6, \texttt{t\_filter, t\_foreach, t\_group} and \texttt{t\_join} represents the query terms in the formalization of logical plan and \texttt{t\_load, t\_assign, t\_store, t\_seq} represents the statement terms. Physical plan contains \texttt{t\_lrearrange, t\_grearrange, t\_package} as query terms in place of \texttt{t\_group} and \texttt{t\_join} to replace the logical GROUP and JOIN operation by a series of physical operators. 
 
 
 \begin{figure}
+	\centering
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\inferrule* [lab = T\_Filter]
+		\inferrule* [lab = \textbf{T\_Filter}]
           	{\Gamma \vdash x \in TSchema \:S \\ 
           	\Gamma \vdash y \in TPred \:S} 
           	{\Gamma \vdash FILTER \:x \:y \in TSchema \:S }
         \end{mathpar}
-        \captionof{figure}{Typing Rules for FILTER}
-  		\label{fig:filter}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -104,93 +188,73 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\hfill\inferrule* [lab = T\_ForEach]
+		\inferrule* [lab = \textbf{T\_ForEach}]
           	{\Gamma \vdash x \in TSchema \:S \\ \Gamma \vdash y \in TFn\: S\:S'} 
 			{\Gamma \vdash FOREACH \:x\:y \in TSchema \:S' }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for FOREACH}
-		\label{fig:foreach}
 	\end{flushleft}
-	\end{minipage}
-\end{figure}
-
-
-\begin{figure}
-\centering
+	\end{minipage}	\\[3ex]
+	
+	\begin{minipage}{1\textwidth}
+	\centering
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_Group]
-          		{\Gamma \vdash x \in TSchema \:S \\\\
-          		\:S \:[c] \in \:CTyNat} 
-          		{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
+		\inferrule* [Right= \textbf{T\_Group}]
+        	{\Gamma \vdash x \in TSchema \:S \\\\
+          	\:S \:[c] \in \:CTyNat} 
+          	{\Gamma \vdash GROUP \:x \:c \in TSchema (CTyNat \:***(CTyBag \:S)\:***) }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for GROUP}
-  \label{fig:group}
-\end{figure}
-
-\begin{figure}
-  \centering
+	\end{minipage}\\[3ex]
+	
+	\begin{minipage}{.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_Join]
+		\inferrule* [Right= \textbf{T\_Join}]
           		{\Gamma \vdash x \in TSchema \:S_1 \\ \Gamma \vdash y \in  TSchema \:S_2 \\\\
 		 		S_1 \:[c_x] \in \:CTyNat \\ \:S_2 \:[c_y] \in \:CTyNat \\\\
 		 		\:S_3 = \:S_1 +++ \:S_2} 
-		 		{\Gamma \vdash JOIN \:x \:c_x \:y \:c_y \in TSchema \:S_3 }
+		 		{\Gamma \vdash JOIN \:x \:c_x \:y \:c_y \in TSchema \:S_3 } \hfill
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Join}
-  \label{fig:join}
-\end{figure}
-
-
-\begin{figure}
-	\begin{minipage}{.4\textwidth}
-	\begin{flushleft}
-		\begin{mathpar}
-		\inferrule* [lab= T\_Load]
+	\end{center}
+	\end{minipage} \\[3ex]
+		
+	\begin{minipage}{0.4\textwidth}
+	\begin{flushright}
+	\begin{mathpar}
+	\inferrule* [lab= \textbf{T\_Load}]
           		{\Gamma \vdash x = None \\ loadable\: T} 
           		{\Gamma \vdash LOAD \:x\:T \in TUnit }
-        \end{mathpar}
-        \captionof{figure}{Typing Rules for LOAD}
-  		\label{fig:load}
-	\end{flushleft}
-    \end{minipage}
-%		\hva \and
-	\hfill
+    \end{mathpar}	
+   	\end{flushright}
+   	\end{minipage}
+	\hfill	
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
-		\inferrule* [lab= T\_Store]
+		\inferrule* [lab= \textbf{T\_Store}]
 				{\Gamma \vdash x \in TSchema \:S} 
 				{\Gamma \vdash STORE \:x \in TUnit }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for STORE}
-		\label{fig:store}
 	\end{flushright}
-	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	\end{minipage} \\[3ex]
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right=\quad\: T\_Assign]
+		\inferrule* [Right= \textbf{T\_Assign}]
           		{\Gamma \vdash x = None \\ \Gamma \vdash q \in TSchema \:S} 
           		{\Gamma \vdash \:x ::= \:q \in TUnit }\\
 	\end{mathpar}
-  \captionof{figure}{Typing Rules for ASSIGN}
-  \label{fig:assign}
-\end{figure}
+	\end{center}
+	\end{minipage}
 
-
-\begin{figure}
 	\begin{minipage}{.4\textwidth}
 	\begin{flushleft}
 		\begin{mathpar}
-		\inferrule* [lab= T\_SeqLoad]
+		\inferrule* [lab= \textbf{T\_SeqLoad}]
           		{s_1 = LOAD \:x \:T \\ \Gamma \vdash s_1 \in TUnit \\\\
           		\Gamma, x:T \vdash s_2 \in TUnit } 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }\\
         \end{mathpar}
-        \captionof{figure}{Typing Rules for SEQLOAD}
-  		\label{fig:seqload}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -198,31 +262,29 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
 	\begin{minipage}{.4\textwidth}
 	\begin{flushright}
 		\begin{mathpar}
-		\inferrule* [lab= T\_SeqStore]
+		\inferrule* [lab= \textbf{T\_SeqStore}]
           	{s_1 = STORE \:x \\\\
           	\Gamma \vdash x \in\: TSchema \:S \\\\ 
 			\Gamma \vdash s_1 \in TUnit \\ \Gamma \vdash s_2 \in TUnit } 
 			{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
 		\end{mathpar}
-		\captionof{figure}{Typing Rules for SEQSTORE}
-		\label{fig:seqstore}
 	\end{flushright}
 	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
-		\inferrule* [Right= \quad T\_SeqAssign]
+		\inferrule* [Right= \textbf{T\_SeqAssign}]
           		{s_1 = (\:x ::= \:q) \\\\
           		\Gamma \vdash q \in TSchema \:S \\\\
           		\Gamma \vdash s_1 \in TUnit \\ \Gamma, x: TSchema \:S \vdash s_2 \in TUnit} 
           		{\Gamma \vdash \:s_1 \: ;; \:s_2 \in TUnit }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for SEQASSIGN}
-  \label{fig:seqassign}
+	\end{center}
+	\end{minipage}	
+	\caption{\textbf{Typing Rule: Logical Plan}}
+	\label{fig-Typing Rules}
 \end{figure}
-
 
 \begin{figure}
 	\begin{minipage}{.4\textwidth}
@@ -233,8 +295,6 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash LReArrange \:x\:c \in TSchema \:S }
         \end{mathpar}
-        \captionof{figure}{Typing Rules for LOCAL REARRANGE}
-  		\label{fig:lrearrange}
 	\end{flushleft}
     \end{minipage}
 %		\hva \and
@@ -247,24 +307,23 @@ The terms in Fig. 6, t\_filter, t\_foreach, t\_group and t\_join represents the 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash GReArrange \:x\:c \in TSchema \:S }
     	\end{mathpar}
-		\captionof{figure}{Typing Rules for GLOBAL REARRANGE}
-		\label{fig:grearrange}
 	\end{flushright}
-	\end{minipage}
-\end{figure}
-
-\begin{figure}
-\centering
+	\end{minipage} \\[3ex]
+	
+	\begin{minipage}{0.5\textwidth}
+	\begin{center}
 	\begin{mathpar}
+	\centering
 		\inferrule* [Right= \quad T\_Package]
           		{\Gamma \vdash x \in \:TSchema \:S \\\\ 
           		S \:[c] \in\:CTyNat} 
           		{\Gamma \vdash PACKAGE \:x \:c \in TSchema( CTyNat \:*** \:(CTyBag \:S)\:***) \: }
 	\end{mathpar}
-  \captionof{figure}{Typing Rule for Package}
-  \label{fig:package}
+	\end{center}
+	\end{minipage}
+	\captionof{figure}{\textbf{Typing Rules Extension for Physical Plan replacing T\_Group and T\_Join}}
+  	\label{fig:typing_physical}
 \end{figure}
 
-
-Fig. 7 - 19 represents the typing rules for the type system of the model. The rules are written under the line and the condition to be proven for the rule to be true is written above the line. For example - In Fig 10 in the typing rule for JOIN, the rule says \newline $\Gamma$ $\vdash$ JOIN \:x \:$c_x$ \:y \:$c_y \in$ TSchema \:$S_3$ ,\: which is true when the facts above the line are proven to be true. The type of JOIN query $\in$ TSchema \:$S_3$ when $x \in \: TSchema$ \:$S_1$ and $y \in \: TSchema$ \:$S_2$ and $S_3$ is the concatenation of $S_1$ and $S_2$ and $c_x$ , $c_y$ are valid columns of schemas $S_1$ and $S_2$ respectively. The facts above the line proves the rule below the line to be true. Other typing rules for rest of the query terms and statement terms for logical and physical plan follows likewise.
-The rules depicted in Fig 7 - 19 strengthens the type checking system of our formalization model and constraints invalid typing of terms and queries in the language. For example: in the typing rule for JOIN, the type of identifier y will never be a type of TFn or TPred or TUnit.  
+Fig. 7-8 represents the typing rules for the type system of the model. The rules are written under the line and the condition to be proven for the rule to be true is written above the line. For example - In Fig 7 in the typing rule for JOIN, the rule says \newline $\Gamma$ $\vdash$ \texttt{JOIN \:x} \:$c_x$ \texttt{\:y} \:$c_y \in$ \texttt{TSchema} \:$S_3$ ,\: which is true when the facts above the line are proven to be true. The type of JOIN query $\in$ \texttt{TSchema} \:$S_3$ when \texttt{x} $\in$ \: \texttt{TSchema} \:$S_1$ and $y \in$ \: \texttt{TSchema} \:$S_2$ and $S_3$ is the concatenation of $S_1$ and $S_2$ and $c_x$ , $c_y$ are valid columns of schemas $S_1$ and $S_2$ respectively. The facts above the line proves the rule below the line to be true. Other typing rules for rest of the query terms and statement terms for logical and physical plan follows likewise.
+The rules depicted in Fig 7-8 strengthens the type checking system of our formalization model and constraints invalid typing of terms and queries in the language. For example: in the typing rule for JOIN, the type of identifier y will never be a type of \texttt{TFn} or \texttt{TPred} or \texttt{TUnit}.  
