@@ -10,28 +10,41 @@ The compilation of a Pig Latin program comprises of four stages \cite{gates2009b
 
 During the first step of Pig compilation, the parser verifies the syntactic correction of the program, type checking and schema inference etc. In the next phase, the parser generates a logical plan of the program that is actually a one to one mapping of the data transformation operations. In third stage each node in logical plan gets translated to one or a series of physical operators which in turn gets assigned to Hadoop stages.
 
-
 Correct Pig compilation depends upon a non-trivial mapping from properties over Pig semantics to properties over MapReduce semantics through this sequence of transformation through the Logical Plan and Physical Plan itermediate representations. In each of these compilation phases, there is a possibility that a compiler implementation is in error, which would of course lead to incorrectness of the programs themselves.
 
-Though this work does not yet fully acheive it, our goal has been to formalize the semantics of logical plan, physical plan, and MapReduce and to turn these informal ideas of compiler correctness into formal ones.
+When beginning this project, our goal was to formalize the semantics of the logical plan, physical plan, and MapReduce and to turn our informal ideas of compiler formalization into formal correctness proofs over well-defined semantics. This was an overly ambitious goal, and our work has not yet achieved it. However, we believe that we have made some important first steps
+towards such a goal.
 
-As we will discuss, the basic idea which we are working towards in this work is a formal model in which every Pig source program implies a specification---a set of abstract constraints---over the set of relations refered to in that program. A proof of correctness of a program would then the a proof that when compiled to another form, the semantics of the latter form imply that these constraints are satisfied. A proof of compiler correctness is thus a proof that for any valid Pig program, a compiled form must satisfy that program's specification.
+In particular, we believe that there is promise in our use of Coq to formulate Pig program specifications. As we will discuss in greater detail later in this report, we have set out to use Coq to define a formal model in which every Pig source program implies a single specification---a set of constraints---over the set of relations (a.k.a. tables) refered to in that program.
 
+A proof of correctness of a program would then be a proof that when compiled to another form, the semantics of the latter form imply that these constraints are satisfied. A proof of compiler correctness is thus a proof that for any valid Pig program, a compiled form must satisfy that program's specification.
 
-\subsection{Contributions}
-\label{subsec:contrib}
+\textbf{Purpose of Report:} The goal of this report is to describe our formalizations, to discuss some of our design choices which we made when using the Coq proof assistant to implement our representation, and to note some of the challenges which we faced while using Coq to achieve these goals.
 
-The goal of this report is to describe our verified formalization of logical and physical plan and discuss the challenges that we faced using Coq proof assistant system to represent our formalization, the choices we made to represent the types and semantics of the language.
-The major contributions of our work are:
+\textbf{Contributions:} The techinical contributions of our work are:
+
 \begin{enumerate}
-	\item An attempt to formalize the programming language model of Pig Latin.
-	\item Representation of Schema and relational structure of database systems.
-	\item Representing non-atomic data types such as Bags with respect to Pig Latin programming model.
-	\item Formalization of different compilation phases of Pig Latin - Logical plan and Physical plan.
+  \item The design of core calculus which we believe to be amenable for use
+	      in proofs but also representative of five of the language's core features:
+	\begin{enumerate}
+		\item Programs specify queries over relations using common data
+		      transformation operators.
+		\item Programs manipulate aggregate non-atomic types (e.g. bags).
+		\item Programs use user defined functions (UDFs) from an environment.
+		\item Programs specify data flow via statements.
+		\item Programs are parallelizable and distributable.
+	\end{enumerate}
+  \item The definition of Coq types to formalize the Pig ``logical plan'' and
+	      a simple type system for it.
+  \item The definition of Coq types to formalize the Pig ``physical plan''
+	      and a simple type system for it.
+  \item The definition of Coq types for instances of schema and relations.
 \end{enumerate}
 
-\subsection{Outline}
-\label{subsec:outline}
+\textbf{Outline} The rest of the paper is organized as follows.
 
-Rest of the paper is organized as follows. In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans. After that we discuss some syntax and semantics of Pig Latin program and some features of the compilation phases. We then discuss the types and typing rules of our formalization. In the section after that
-we present the dynamic semantics and some interesting rules and lemmas that we have formalized. We then discuss the challenges that we faced during the implementation of our formalization and lessons we have learned. We conclude with the benefits of this formalization and the opportunity of possible future goals and scope that this formalization opens up to us.
+In the next section we provide some examples to show how relational operations are defined in Pig Latin programs and how those data transformations are converted to equivalent Logical and Physical plans, and to also give a sense  of how specifications may be derived from these.
+
+In Sections 3 and 4, that we discuss some syntax and semantics of Pig Latin program followed by our discussion of their typing relations. In Sections 5 and 6, we discuss how specifications could be constructed from source programs and explain the basic idea behind how they could be used.
+
+Sections 7-9 discuss related work and future work.
